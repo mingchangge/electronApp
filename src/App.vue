@@ -6,8 +6,11 @@
     <a href="https://vuejs.org/" target="_blank">
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
+    <a href="https://vuejs.org/" target="_blank">
+      <img src="./assets/electron.svg" class="logo electron" alt="Vue logo" />
+    </a>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <HelloWorld msg="Vite + Vue + Electron" />
 </template>
 
 <script setup>
@@ -26,5 +29,8 @@
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+.logo.electron:hover {
+  filter: drop-shadow(0 0 2em #9FEAF9);
 }
 </style>

@@ -19,12 +19,31 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
+    "asar": true,
+    "asarUnpack":[
+      "./dist/electron",
+      "./package.json"
+    ],
+    "win":{
+      "target": [{
+        "target": "nsis",
+        "arch": [ 
+          "x64", 
+          "ia32"
+        ]
+      }]
+    },
+    "extraResources": [
+      {
+        "from": "public/", 
+        "to": "static/"
+      } 
+    ],
     "files": [
       "dist/**/*",
       "electron/**/*"
     ],
     "directories": {
-      "buildResources": "static",
       "output": "release"
     }
   },

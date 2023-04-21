@@ -83,9 +83,6 @@ export default defineConfig(({ command }) => {
       assetsInlineLimit: 4096, // 图片转 base64 编码的阈值
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
-        output: {
-          format: 'cjs',     // Electron 目前只支持 CommonJs 格式
-        },
         external: [          // 告诉 Rollup 不要打包内建 API
           'electron',
           ...builtinModules,

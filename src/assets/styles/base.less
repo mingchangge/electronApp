@@ -1,0 +1,24 @@
+@media screen {
+  body {
+    &.dark-theme {
+      filter: invert(0.94) hue-rotate(180deg);
+      img,
+      .el-tag--primary,
+      .el-tag--success,
+      .el-tag--warning,
+      .el-tag--error,
+      .el-button--primary,
+      .el-button--primary {
+        filter: invert(1) hue-rotate(180deg);
+      }
+      .invert-restore,
+      .table-button {
+        filter: none;
+        /* // 反转回去的，里面的东西，在去除反转 */
+        img {
+          filter: none;
+        }
+      }
+    }
+  }
+}

@@ -77,6 +77,16 @@ export default defineConfig(({ command }) => {
       // Use Node.js API in the Renderer-process
       renderer(),
     ],
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            hack: `true; @import (reference) "${resolve("src/assets/styles/base.less")}";`,
+          },
+          javascriptEnabled: true,
+        },
+      },
+    },
     build: {
       assetsDir: 'static', // 静态资源的存放目录
       assetsPublicPath: './',

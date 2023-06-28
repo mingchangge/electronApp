@@ -1,3 +1,14 @@
+const { contextBridge, ipcRenderer } = require('electron')
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  // AfterLogin: () => ipcRenderer.send('after-login'),
+  // AfterLogout: () => ipcRenderer.send('after-logout'),
+  // NewLoginWindow: () => ipcRenderer.send('new-login-window'),
+  // AppInfo: () => ipcRenderer.invoke('get-app-info'),
+  ToggleTheme: () => ipcRenderer.invoke('toggle-dark-mode'),
+  // OpenLocalFile: filename => ipcRenderer.invoke('open-local-file', filename),
+  // onSchemeChange: callback => ipcRenderer.on('scheme-change', callback)
+})
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector);
@@ -95,4 +106,4 @@ domReady().then(appendLoading)
 window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
-setTimeout(removeLoading, 4999)
+setTimeout(removeLoading, 10)

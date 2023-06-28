@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="invert-restore">
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>
@@ -11,13 +11,36 @@
     </a>
   </div>
   <HelloWorld msg="Vite + Vue + Electron" />
+  <PDFThumbnai :fileUrl="fileUrl" :width="400" :height="600"/>
 </template>
 
 <script setup>
   import HelloWorld from './components/HelloWorld.vue'
+  import PDFThumbnai from '@/views/PDFThumbnai.vue' 
+  import { ref} from 'vue';
+
+  const fileUrl=ref(new URL(`./assets//pdf/2022.pdf`, import.meta.url).href)
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@media screen {
+  body {
+    &.dark-theme {
+      filter: invert(0.94) hue-rotate(180deg);
+      img {
+        filter: invert(1) hue-rotate(180deg);
+      }
+      .invert-restore,
+      .table-button {
+        filter: none;
+        /* // 反转回去的，里面的东西，在去除反转 */
+        img {
+          filter: none;
+        }
+      }
+    }
+  }
+}
 .logo {
   height: 6em;
   padding: 1.5em;

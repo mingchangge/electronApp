@@ -1,5 +1,5 @@
 <template>
-  <div class="invert-restore">
+  <!-- <div class="invert-restore">
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>
@@ -11,15 +11,17 @@
     </a>
   </div>
   <HelloWorld msg="Vite + Vue + Electron" />
-  <PDFThumbnai :fileUrl="fileUrl" :width="400" :height="600"/>
+  <PDFThumbnai :fileUrl="fileUrl" :width="400" :height="600" /> -->
+  <TabSwitch />
 </template>
 
 <script setup>
-  import HelloWorld from './components/HelloWorld.vue'
-  import PDFThumbnai from '@/views/PDFThumbnai.vue' 
-  import { ref} from 'vue';
+import HelloWorld from "./components/HelloWorld.vue";
+import PDFThumbnai from "@/views/PDFThumbnai.vue";
+import TabSwitch from "@/views/TabSwtich.vue";
+import { ref } from "vue";
 
-  const fileUrl=ref(new URL(`./assets//pdf/2022.pdf`, import.meta.url).href)
+const fileUrl = ref(new URL(`./assets//pdf/2022.pdf`, import.meta.url).href);
 </script>
 
 <style lang="less" scoped>
@@ -54,6 +56,6 @@
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 .logo.electron:hover {
-  filter: drop-shadow(0 0 2em #9FEAF9);
+  filter: drop-shadow(0 0 2em #9feaf9);
 }
 </style>

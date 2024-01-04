@@ -5,7 +5,7 @@
         <li
           class="tab"
           :class="{ active: tab.isActive }"
-          v-for="tab in tabDatas"
+          v-for="tab in tabData"
           :key="tab.applicationKey"
           @click="changeTab(tab)"
         >
@@ -17,18 +17,12 @@
           ></div>
         </li>
       </ul>
-      <div class="btns">
-        <img src="./images/notice.png" alt="" @click="openNotice" />
-        <img src="./images/minimize.png" alt="" @click="minimize" />
-        <img src="./images/maximize.png" alt="" @click="maximize" />
-        <img src="./images/close_tab.png" alt="" @click="close" />
-      </div>
     </div>
     <div class="application-container" v-show="activeKey === 'Home'">
-      <ul class="application-datas">
+      <ul class="application-data-box">
         <li
           class="application-data"
-          v-for="app in applicationDatas"
+          v-for="app in applicationData"
           :key="app.applicationKey"
           @click="openApplication(app)"
         >
@@ -40,25 +34,17 @@
 </template>
 
 <script>
-// import {
-//   sendChangeBrowserView,
-//   // sendBrowserWindowHeader,
-//   // getIpcMainMessage,
-//   // minimize,
-//   // maximize,
-//   // close,
-// } from "./ipcRenderer";
 export default {
   data() {
     return {
-      applicationDatas: [
+      applicationData: [
         {
           applicationKey: "Home",
           applicationName: "首页",
           applicationIcon: "",
           applicationUrl: "http://localhost:8888/#",
           isActive: true,
-          isVisable: true,
+          isVisible: true,
           showClose: false,
         },
         {
@@ -67,7 +53,7 @@ export default {
           applicationIcon: "",
           applicationUrl: "https://www.baidu.com",
           isActive: false,
-          isVisable: false,
+          isVisible: false,
           showClose: true,
         },
         {
@@ -76,42 +62,40 @@ export default {
           applicationIcon: "",
           applicationUrl: "https://www.google.com",
           isActive: false,
-          isVisable: false,
+          isVisible: false,
           showClose: true,
         },
       ],
       activeKey: "Home",
-      tabDatas: [],
-      $electron: undefined,
+      tabData: [],
     };
   },
   created() {
-    this.tabDatas = this.applicationDatas.filter((app) => app.isVisable);
-    this.$electron = window.electronAPI;
+    this.tabData = this.applicationData.filter((app) => app.isVisible);
   },
   methods: {
     changeActive(application) {
+      if (!window.electronAPI) return;
       // 当前要切换的tab与当前选中的tab相同时，不进行任何操作
       if (application.applicationKey === this.activeKey) {
         return;
       }
-      this.applicationDatas.forEach((item) => {
+      this.applicationData.forEach((item) => {
         if (item.applicationKey === application.applicationKey) {
           item.isActive = true;
-          item.isVisable = true;
+          item.isVisible = true;
           this.activeKey = application.applicationKey;
         } else {
           item.isActive = false;
         }
       });
-      this.tabDatas = [];
-      this.tabDatas = this.applicationDatas.filter((app) => app.isVisable);
+      this.tabData = [];
+      this.tabData = this.applicationData.filter((app) => app.isVisible);
     },
     /**
      * 切换标签页时触发
      */
     changeTab(application) {
-      if (!window.electronAPI) return;
       this.changeActive(application);
       if (application.applicationKey === "Home") {
         window.electronAPI.sendChangeBrowserView("home-browser-view", {
@@ -119,7 +103,7 @@ export default {
           applicationUrl: application.applicationUrl,
         });
       } else {
-        this.$electron.sendChangeBrowserView("changetab-browser-view", {
+        window.electronAPI.sendChangeBrowserView("changetab-browser-view", {
           applicationKey: application.applicationKey,
           applicationUrl: application.applicationUrl,
         });
@@ -142,94 +126,30 @@ export default {
         });
       }
     },
+    /**
+     * 关闭标签页
+     */
+    closeTab(application) {
+      this.applicationData.forEach((app) => {
+        if (app.applicationKey === "Home") {
+          app.isActive = true;
+          app.isVisible = true;
+          this.$forceUpdate();
+          this.activeKey = app.applicationKey;
+        }
+        if (app.applicationKey === application.applicationKey) {
+          app.isVisible = false;
+          app.isActive = false;
+        }
+      });
+      this.tabData = this.applicationData.filter((app) => app.isVisible);
+      window.electronAPI.sendChangeBrowserView("close-browser-view", {
+        applicationKey: application.applicationKey,
+        applicationUrl: application.applicationUrl,
+      });
+    },
   },
 };
-// export default class App extends Vue {
-
-//
-//   /**
-//    * 切换标签页时触发
-//    * @author blacklisten
-//    * @date 2020-04-16
-//    * @param {any} application:AppApplicationDatas
-//    * @returns {any}
-//    */
-//   private changeTab(application: AppApplicationDatas): void {
-//     this.changeActive(application);
-//     if (application.applicationKey === "Home") {
-//       this.$electron.sendChangeBrowserView("home-browser-view", {
-//         applicationKey: application.applicationKey,
-//         applicationUrl: application.applicationUrl,
-//       });
-//     } else {
-//       this.$electron.sendChangeBrowserView("changetab-browser-view", {
-//         applicationKey: application.applicationKey,
-//         applicationUrl: application.applicationUrl,
-//       });
-//     }
-//   }
-
-//   /**
-//    * 关闭标签页
-//    * @author blacklisten
-//    * @date 2020-04-16
-//    * @param {any} application:AppApplicationDatas
-//    * @returns {any}
-//    */
-//   private closeTab(application: AppApplicationDatas): void {
-//     this.applicationDatas.forEach((app) => {
-//       if (app.applicationKey === "Home") {
-//         app.isActive = true;
-//         app.isVisable = true;
-//         this.$forceUpdate();
-//         this.activeKey = app.applicationKey;
-//       }
-//       if (app.applicationKey === application.applicationKey) {
-//         app.isVisable = false;
-//         app.isActive = false;
-//       }
-//     });
-//     this.tabDatas = this.applicationDatas.filter((app) => app.isVisable);
-//     this.$electron.sendChangeBrowserView("close-browser-view", {
-//       applicationKey: application.applicationKey,
-//       applicationUrl: application.applicationUrl,
-//     });
-//   }
-
-//   /**
-//    * 改变当前的选中项，重新获取tabDatas
-//    * @author blacklisten
-//    * @date 2020-04-16
-//    * @param {any} application:AppApplicationDatas
-//    * @returns {any}
-//    */
-//   private changeActive(application: AppApplicationDatas): void {
-//     // 当前要切换的tab与当前选中的tab相同时，不进行任何操作
-//     if (application.applicationKey === this.activeKey) {
-//       return;
-//     }
-//     this.applicationDatas.forEach((item) => {
-//       if (item.applicationKey === application.applicationKey) {
-//         item.isActive = true;
-//         item.isVisable = true;
-//         this.activeKey = application.applicationKey;
-//       } else {
-//         item.isActive = false;
-//       }
-//     });
-//     this.tabDatas = [];
-//     this.tabDatas = this.applicationDatas.filter((app) => app.isVisable);
-//   }
-
-//   private openNotice() {
-//     sendBrowserWindowHeader("open-notice", {
-//       title: "这是测试",
-//     });
-//     sendBrowserWindowHeader("open-notice-dialog", {
-//       title: "这是测试",
-//     });
-//   }
-// }
 </script>
 
 <style lang="less">
@@ -240,7 +160,7 @@ export default {
   outline: none;
 }
 #app {
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 .tab-container {
   background: transparent;
@@ -263,7 +183,7 @@ export default {
     padding-right: 20px;
     .tab {
       -webkit-app-region: no-drag;
-      margin: 5px -10px 0;
+      margin: 5px -10px 0 0;
       border-top-right-radius: 25px 170px;
       border-top-left-radius: 20px 90px;
       padding: 0 30px 0 25px;
@@ -285,7 +205,7 @@ export default {
         height: 30px;
       }
       .close {
-        background: url(~@/images/close_tab.png);
+        background: url(../assets/images/close_tab.png);
         width: 16px;
         height: 15px;
         position: absolute;
@@ -328,19 +248,9 @@ export default {
       }
     }
   }
-  .btns {
-    -webkit-app-region: no-drag;
-    line-height: 35px;
-    img {
-      width: 16px;
-      height: 16px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-  }
 }
 .application-container {
-  .application-datas {
+  .application-data-box {
     display: flex;
     list-style: none;
     align-items: center;

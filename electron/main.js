@@ -1,16 +1,15 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var electron_1 = require("electron");
-var tabConfig_1 = require("./tabConfig");
-var utils_1 = require("./utils");
+const { app, BrowserWindow, globalShortcut } = require("electron");
+var tabConfig = require("./tabConfig");
+var utils = require("./utils");
 const path = require("path");
 
 var mainWindow;
-var HOMEMAXHEIGHT = 36;
+var homeMaxHeight = 36;
 var createNewTabs;
 var createWindow = function () {
   // Create the browser window.
-  mainWindow = new electron_1.BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 1200,
@@ -22,7 +21,7 @@ var createWindow = function () {
     },
   });
   mainWindow.webContents.loadURL("http://localhost:8081/");
-  createNewTabs = new tabConfig_1.CreateNewTabs(mainWindow, HOMEMAXHEIGHT);
+  createNewTabs = new tabConfig.CreateNewTabs(mainWindow, homeMaxHeight);
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
     mainWindow = null;
@@ -32,39 +31,24 @@ var createWindow = function () {
     mainWindow.show();
   });
 };
-electron_1.app.on("ready", function () {
+app.on("ready", function () {
   createWindow();
   createNewTabs.init();
-  electron_1.globalShortcut.register("CmdOrCtrl+Alt+C", function () {
-    utils_1.DEVTOOLS(mainWindow);
+  globalShortcut.register("CmdOrCtrl+Alt+C", function () {
+    utils.DEVTOOLS(mainWindow);
   });
-  // mainWindow.reload()
-  // mainWindow.webContents.reload()
 });
 // Quit when all windows are closed.
-electron_1.app.on("window-all-closed", function () {
+app.on("window-all-closed", function () {
   if (process.platform !== "darwin") {
-    electron_1.app.quit();
+    app.quit();
     mainWindow = null;
     createNewTabs.destroyAllBrowserView();
   }
 });
-electron_1.app.on("activate", function () {
+app.on("activate", function () {
   if (mainWindow === null) {
     createWindow();
     createNewTabs.init();
   }
-});
-electron_1.ipcMain.on("open-notice", function () {
-  var child = new electron_1.BrowserWindow({
-    parent: mainWindow,
-    modal: true,
-    show: true,
-  });
-  child.loadURL("http://localhost:3000/");
-});
-electron_1.ipcMain.on("open-notice-dialog", function () {
-  var child = new electron_1.BrowserWindow({ parent: mainWindow, modal: true });
-  child.loadURL("https://www.google.com");
-  electron_1.dialog.showOpenDialog(child);
 });
